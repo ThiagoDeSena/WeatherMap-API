@@ -25,7 +25,7 @@ builder.Services.AddHttpClient();
 
 // Registrar HttpClient para o WeatherService
 builder.Services.AddHttpClient<IWeatherService, OpenMeteoService>();
-
+builder.Services.AddScoped<IWeatherDatabaseService, WeatherDatabaseService>();
 // Registrar outros serviços
 // builder.Services.AddScoped<IWeatherService, OpenMeteoService>();
 
@@ -74,11 +74,11 @@ builder.Logging.AddDebug();
 var app = builder.Build();
 
 // Criar o banco de dados automaticamente se não existir
-// using (var scope = app.Services.CreateScope())
-// {
-//     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-//     context.Database.EnsureCreated(); // Cria o banco se não existir
-// }
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.EnsureCreated(); // Cria o banco se não existir
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
