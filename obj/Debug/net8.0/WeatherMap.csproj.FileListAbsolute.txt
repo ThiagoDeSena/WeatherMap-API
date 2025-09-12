@@ -40,3 +40,4 @@ C:\Users\Thiago\Documents\.NET\WeatherMap\bin\Debug\net8.0\Mono.TextTemplating.d
 C:\Users\Thiago\Documents\.NET\WeatherMap\bin\Debug\net8.0\MySqlConnector.dll
 C:\Users\Thiago\Documents\.NET\WeatherMap\bin\Debug\net8.0\Pomelo.EntityFrameworkCore.MySql.dll
 C:\Users\Thiago\Documents\.NET\WeatherMap\bin\Debug\net8.0\System.CodeDom.dll
+C:\Users\Thiago\Documents\.NET\WeatherMap\obj\Debug\net8.0\WeatherMap.sourcelink.json

@@ -243,8 +243,9 @@ namespace WeatherMap.Services
         /// </summary>
         private string BuildWeatherUrl(double latitude, double longitude, int forecastDays)
         {
-            return $"/forecast?" +
-                   $"latitude={latitude:F4}&longitude={longitude:F4}" +
+            // Usar URL relativa sem barra inicial para usar corretamente a BaseAddress
+            return $"forecast?" +
+                   $"latitude={latitude.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)}&longitude={longitude.ToString("F4", System.Globalization.CultureInfo.InvariantCulture)}" +
                    $"&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m" +
                    $"&hourly=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,rain,weather_code,pressure_msl,cloud_cover,wind_speed_10m,wind_direction_10m" +
                    $"&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,precipitation_probability_max,wind_speed_10m_max,wind_gusts_10m_max,wind_direction_10m_dominant" +
