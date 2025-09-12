@@ -19,11 +19,14 @@ builder.Services.AddControllers();
 builder.Services.Configure<ApiSettings>(
     builder.Configuration.GetSection("ApiSettings"));
 
+// CORREÇÃO: Registrar IHttpClientFactory primeiro
+builder.Services.AddHttpClient();
+
 // Registrar HttpClient para o WeatherService
 builder.Services.AddHttpClient<IWeatherService, OpenMeteoService>();
 
 // Registrar outros serviços
-builder.Services.AddScoped<IWeatherService, OpenMeteoService>();
+// builder.Services.AddScoped<IWeatherService, OpenMeteoService>();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

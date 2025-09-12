@@ -9,12 +9,12 @@ namespace WeatherMap.Configurations
         /// <summary>
         /// URL base da API Open-Meteo
         /// </summary>
-        public string OpenMeteoBaseUrl { get; set; } = "https://api.open-meteo.com/v1";
+        public string OpenMeteoBaseUrl { get; set; } = "https://api.open-meteo.com";
 
         /// <summary>
         /// URL para geocoding (buscar coordenadas por nome da cidade)
         /// </summary>
-        public string GeocodingBaseUrl { get; set; } = "https://geocoding-api.open-meteo.com/v1";
+        public string GeocodingBaseUrl { get; set; } = "https://geocoding-api.open-meteo.com";
 
         /// <summary>
         /// Timeout para requests HTTP (em segundos)
