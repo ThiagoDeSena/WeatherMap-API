@@ -1,0 +1,297 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>WeatherMap</name>
+    </assembly>
+    <members>
+        <member name="T:WeatherMap.Configurations.ApiSettings">
+            <summary>
+            Configurações para APIs externas
+            </summary>
+        </member>
+        <member name="P:WeatherMap.Configurations.ApiSettings.OpenMeteoBaseUrl">
+            <summary>
+            URL base da API Open-Meteo
+            </summary>
+        </member>
+        <member name="P:WeatherMap.Configurations.ApiSettings.GeocodingBaseUrl">
+            <summary>
+            URL para geocoding (buscar coordenadas por nome da cidade)
+            </summary>
+        </member>
+        <member name="P:WeatherMap.Configurations.ApiSettings.TimeoutSeconds">
+            <summary>
+            Timeout para requests HTTP (em segundos)
+            </summary>
+        </member>
+        <member name="P:WeatherMap.Configurations.ApiSettings.MaxRetries">
+            <summary>
+            Número máximo de tentativas em caso de falha
+            </summary>
+        </member>
+        <member name="P:WeatherMap.Configurations.ApiSettings.UserAgent">
+            <summary>
+            User-Agent para identificar sua aplicação
+            </summary>
+        </member>
+        <member name="T:WeatherMap.Configurations.WeatherCodes">
+            <summary>
+            Códigos de clima do Open-Meteo para descrições amigáveis
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.TestController.HealthCheck">
+            <summary>
+            Testa se a API externa está funcionando
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.TestController.GetWeatherByCity(System.String,System.String)">
+            <summary>
+            Busca clima por nome da cidade (apenas teste da API externa)
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.TestController.GetWeatherByCoordinates(System.Double,System.Double)">
+            <summary>
+            Busca clima por coordenadas (apenas teste da API externa)
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.TestController.GetLocationsByName(System.String,System.String)">
+            <summary>
+            Busca coordenadas por nome da cidade
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.FetchAndSaveWeatherByCity(System.String,System.String,System.Int32)">
+            <summary>
+            Busca dados climáticos por cidade e salva no banco de dados
+            </summary>
+            <param name="cityName">Nome da cidade</param>
+            <param name="countryCode">Código do país (opcional)</param>
+            <param name="forecastDays">Dias de previsão (1-7)</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.FetchAndSaveWeatherByCoordinates(System.Double,System.Double,System.Int32)">
+            <summary>
+            Busca dados climáticos por coordenadas e salva no banco de dados
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetWeatherHistory(System.Int32)">
+            <summary>
+            Retorna o histórico de consultas climáticas salvas
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetSavedWeatherById(System.Int32)">
+            <summary>
+            Retorna dados climáticos salvos por ID
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetSavedWeatherByLocation(System.String)">
+            <summary>
+            Busca dados climáticos salvos por nome da localização
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetWeatherTrends(System.String,System.Int32)">
+            <summary>
+            Retorna tendências e estatísticas dos dados salvos
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.UpdateWeatherLocationName(System.Int32,WeatherMap.Controllers.WeatherController.UpdateLocationRequest)">
+            <summary>
+            Atualiza o nome da localização de um registro climático
+            </summary>
+            <param name="id">ID do registro</param>
+            <param name="locationName">Novo nome da localização</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.DeleteWeatherHistory(System.Int32)">
+            <summary>
+            Deleta um registro climático específico por ID
+            </summary>
+            <param name="id">ID do registro a ser deletado</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.CleanupOldWeatherData(System.Int32)">
+            <summary>
+            Deleta registros climáticos antigos (limpeza de dados)
+            </summary>
+            <param name="daysOld">Deletar registros mais antigos que X dias</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetLocationStatisticsRaw(System.Int32)">
+            <summary>
+            Estatísticas de localizações usando consulta SQL bruta
+            </summary>
+            <param name="days">Período em dias para análise</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetTemperatureTrendsRaw(System.String,System.Int32)">
+            <summary>
+            Tendências de temperatura usando consulta SQL bruta
+            </summary>
+            <param name="locationName">Nome da localização</param>
+            <param name="days">Período em dias</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetLocationComparisonRaw(WeatherMap.Controllers.WeatherController.LocationComparisonRequest)">
+            <summary>
+            Comparação entre múltiplas localizações usando consulta SQL bruta
+            </summary>
+            <param name="request">Lista de localizações para comparar</param>
+        </member>
+        <member name="M:WeatherMap.Controllers.WeatherController.GetDatabaseHealthRaw">
+            <summary>
+            Informações de saúde do banco de dados usando consulta SQL bruta
+            </summary>
+            /// <returns>Dados de saúde do banco incluindo contagens e estatísticas</returns>
+            <remarks>
+            Esta consulta executa SQL bruto para obter métricas de performance
+            e utilização do banco de dados de forma eficiente.
+            </remarks>
+            <exception cref="T:System.Exception">Erro na conexão com o banco</exception>
+        </member>
+        <member name="T:WeatherMap.DTOs.OpenMeteoResponse">
+            <summary>
+            Resposta completa da API Open-Meteo
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "T:WeatherMap.DTOs.CurrentWeather" -->
+        <member name="T:WeatherMap.DTOs.HourlyWeather">
+            <summary>
+            Dados climáticos por hora
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.DailyWeather">
+            <summary>
+            Dados climáticos diários
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.WeatherData">
+            <summary>
+            Request para buscar dados climáticos
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.WeatherResponse">
+            <summary>
+            DTO simplificado para resposta da nossa API
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.CurrentWeatherDto">
+            <summary>
+            Dados atuais simplificados
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.DailyWeatherDto">
+            <summary>
+            Previsão diária simplificada
+            </summary>
+        </member>
+        <member name="T:WeatherMap.DTOs.GeocodingResponse">
+            <summary>
+            DTO para geocoding (buscar coordenadas por nome da cidade)
+            </summary>
+        </member>
+        <member name="T:WeatherMap.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:WeatherMap.Migrations.UpdateWeatherModels">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.UpdateWeatherModels.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.UpdateWeatherModels.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Migrations.UpdateWeatherModels.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:WeatherMap.Models.DailyForecast">
+            <summary>
+            Previsões diárias associadas a um histórico climático
+            </summary>
+        </member>
+        <member name="T:WeatherMap.Models.WeatherHistory">
+            <summary>
+            Histórico de consultas climáticas salvas no banco
+            </summary>
+        </member>
+        <member name="T:WeatherMap.Services.IWeatherService">
+            <summary>
+            Interface para serviços de dados climáticos
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Services.IWeatherService.GetWeatherByCoordinatesAsync(System.Double,System.Double,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Busca dados climáticos por coordenadas
+            </summary>
+            <param name="latitude">Latitude</param>
+            <param name="longitude">Longitude</param>
+            <param name="forecastDays">Número de dias de previsão (padrão: 7)</param>
+            <param name="cancellationToken">Token de cancelamento</param>
+            <returns>Dados climáticos</returns>
+        </member>
+        <member name="M:WeatherMap.Services.IWeatherService.GetWeatherByCityAsync(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
+            <summary>
+            Busca dados climáticos por nome da cidade
+            </summary>
+            <param name="cityName">Nome da cidade</param>
+            <param name="countryCode">Código do país (opcional)</param>
+            <param name="forecastDays">Número de dias de previsão (padrão: 7)</param>
+            <param name="cancellationToken">Token de cancelamento</param>
+            <returns>Dados climáticos</returns>
+        </member>
+        <member name="M:WeatherMap.Services.IWeatherService.GetLocationsByNameAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <summary>
+            Busca coordenadas por nome da cidade (Geocoding)
+            </summary>
+            <param name="cityName">Nome da cidade</param>
+            <param name="countryCode">Código do país (opcional)</param>
+            <param name="cancellationToken">Token de cancelamento</param>
+            <returns>Lista de localizações encontradas</returns>
+        </member>
+        <member name="M:WeatherMap.Services.IWeatherService.GetHistoricalWeatherAsync(System.Double,System.Double,System.DateTime,System.DateTime,System.Threading.CancellationToken)">
+            <summary>
+            Busca dados históricos do clima
+            </summary>
+            <param name="latitude">Latitude</param>
+            <param name="longitude">Longitude</param>
+            <param name="startDate">Data inicial</param>
+            <param name="endDate">Data final</param>
+            <param name="cancellationToken">Token de cancelamento</param>
+            <returns>Dados históricos</returns>
+        </member>
+        <member name="M:WeatherMap.Services.IWeatherService.IsApiHealthyAsync(System.Threading.CancellationToken)">
+            <summary>
+            Verifica se a API está funcionando
+            </summary>
+            <param name="cancellationToken">Token de cancelamento</param>
+            <returns>True se a API estiver funcionando</returns>
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.GetWeatherByCoordinatesAsync(System.Double,System.Double,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.GetWeatherByCityAsync(System.String,System.String,System.Int32,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.GetLocationsByNameAsync(System.String,System.String,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.GetHistoricalWeatherAsync(System.Double,System.Double,System.DateTime,System.DateTime,System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.IsApiHealthyAsync(System.Threading.CancellationToken)">
+            <inheritdoc />
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.BuildWeatherUrl(System.Double,System.Double,System.Int32)">
+            <summary>
+            Constrói a URL para buscar dados climáticos
+            </summary>
+        </member>
+        <member name="M:WeatherMap.Services.OpenMeteoService.MapToWeatherResponse(WeatherMap.DTOs.OpenMeteoResponse)">
+            <summary>
+            Mapeia a resposta da Open-Meteo para nosso DTO
+            </summary>
+        </member>
+    </members>
+</doc>

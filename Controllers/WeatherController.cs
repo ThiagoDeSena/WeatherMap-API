@@ -592,6 +592,12 @@ namespace WeatherMap.Controllers
         /// <summary>
         /// Informações de saúde do banco de dados usando consulta SQL bruta
         /// </summary>
+        /// /// <returns>Dados de saúde do banco incluindo contagens e estatísticas</returns>
+        /// <remarks>
+        /// Esta consulta executa SQL bruto para obter métricas de performance
+        /// e utilização do banco de dados de forma eficiente.
+        /// </remarks>
+        /// <exception cref="Exception">Erro na conexão com o banco</exception>
         [HttpGet("analytics/database-health-raw")]
         public async Task<IActionResult> GetDatabaseHealthRaw()
         {
