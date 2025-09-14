@@ -40,8 +40,8 @@ builder.Services.AddSwaggerGen(c =>
         Description = "API para consultar dados climáticos e análises meteorológicas",
         Contact = new()
         {
-            Name = "Seu Nome",
-            Email = "seu.email@exemplo.com"
+            Name = "Thiago De Sena",
+            Email = "thiagosena316@gmail.com"
         }
     });
 
