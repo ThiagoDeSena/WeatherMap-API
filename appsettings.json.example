@@ -1,6 +1,6 @@
 {
   "ConnectionStrings": {
-    "DefaultConnection": "Server=localhost;Port=3306;Database=weathermapdb;user=root;password=12345;"
+    "DefaultConnection": "Server=SEU_SERVIDOR;Port=3306;Database=SEU_BANCO;user=SEU_USUARIO;password=SUA_SENHA;"
   },
   "ApiSettings": {
     "OpenMeteoBaseUrl": "https://api.open-meteo.com",
