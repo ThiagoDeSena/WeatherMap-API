@@ -343,5 +343,288 @@ namespace WeatherMap.Controllers
                 return StatusCode(500, new { error = "Erro interno", message = ex.Message });
             }
         }
+
+        // Métodos adicionais para atualizar, deletar e análises avançadas:
+
+        /// <summary>
+        /// Atualiza o nome da localização de um registro climático
+        /// </summary>
+        /// <param name="id">ID do registro</param>
+        /// <param name="locationName">Novo nome da localização</param>
+        [HttpPut("saved/{id:int}/location")]
+        public async Task<IActionResult> UpdateWeatherLocationName(int id, [FromBody] UpdateLocationRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(request.LocationName))
+                {
+                    return BadRequest(new { message = "Nome da localização é obrigatório" });
+                }
+
+                _logger.LogInformation("Atualizando localização do registro {Id} para {Location}", id, request.LocationName);
+
+                var updatedWeather = await _weatherDatabaseService.UpdateWeatherHistoryAsync(id, request.LocationName);
+
+                if (updatedWeather == null)
+                {
+                    return NotFound(new { message = $"Registro com ID {id} não encontrado" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Localização atualizada com sucesso",
+                    data = new
+                    {
+                        id = updatedWeather.Id,
+                        oldLocation = updatedWeather.LocationName,
+                        newLocation = request.LocationName,
+                        updatedAt = DateTime.UtcNow
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao atualizar localização do registro {Id}", id);
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Deleta um registro climático específico por ID
+        /// </summary>
+        /// <param name="id">ID do registro a ser deletado</param>
+        [HttpDelete("saved/{id:int}")]
+        public async Task<IActionResult> DeleteWeatherHistory(int id)
+        {
+            try
+            {
+                _logger.LogInformation("Tentando deletar registro climático com ID: {Id}", id);
+
+                var deleted = await _weatherDatabaseService.DeleteWeatherHistoryAsync(id);
+
+                if (!deleted)
+                {
+                    return NotFound(new { message = $"Registro com ID {id} não encontrado" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Registro climático {id} deletado com sucesso",
+                    deletedAt = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro ao deletar registro climático {Id}", id);
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Deleta registros climáticos antigos (limpeza de dados)
+        /// </summary>
+        /// <param name="daysOld">Deletar registros mais antigos que X dias</param>
+        [HttpDelete("cleanup")]
+        public async Task<IActionResult> CleanupOldWeatherData([FromQuery] int daysOld = 90)
+        {
+            try
+            {
+                if (daysOld <= 0)
+                {
+                    return BadRequest(new { message = "daysOld deve ser maior que 0" });
+                }
+
+                _logger.LogInformation("Iniciando limpeza de dados climáticos mais antigos que {Days} dias", daysOld);
+
+                var cutoffDate = DateTime.UtcNow.AddDays(-daysOld);
+                var deleted = await _weatherDatabaseService.DeleteOldWeatherDataAsync(cutoffDate);
+
+                if (!deleted)
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Nenhum registro antigo encontrado para deletar",
+                        cutoffDate = cutoffDate
+                    });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = $"Registros climáticos anteriores a {cutoffDate:yyyy-MM-dd} foram deletados",
+                    cutoffDate = cutoffDate,
+                    deletedAt = DateTime.UtcNow
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro na limpeza de dados antigos ({Days} dias)", daysOld);
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Estatísticas de localizações usando consulta SQL bruta
+        /// </summary>
+        /// <param name="days">Período em dias para análise</param>
+        [HttpGet("analytics/locations-stats-raw")]
+        public async Task<IActionResult> GetLocationStatisticsRaw([FromQuery] int days = 30)
+        {
+            try
+            {
+                if (days <= 0 || days > 365)
+                {
+                    return BadRequest(new { message = "days deve estar entre 1 e 365" });
+                }
+
+                _logger.LogInformation("Buscando estatísticas de localização via SQL bruta ({Days} dias)", days);
+
+                var stats = await _weatherDatabaseService.GetLocationStatisticsRawAsync(days);
+
+                if (!stats.Any())
+                {
+                    return NotFound(new { message = $"Nenhum dado encontrado para os últimos {days} dias" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Estatísticas obtidas via consulta SQL bruta",
+                    period = new { days, startDate = DateTime.UtcNow.AddDays(-days), endDate = DateTime.UtcNow },
+                    totalLocations = stats.Count,
+                    data = stats
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro na consulta SQL bruta de estatísticas");
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Tendências de temperatura usando consulta SQL bruta
+        /// </summary>
+        /// <param name="locationName">Nome da localização</param>
+        /// <param name="days">Período em dias</param>
+        [HttpGet("analytics/temperature-trends-raw/{locationName}")]
+        public async Task<IActionResult> GetTemperatureTrendsRaw(string locationName, [FromQuery] int days = 30)
+        {
+            try
+            {
+                if (days <= 0 || days > 365)
+                {
+                    return BadRequest(new { message = "days deve estar entre 1 e 365" });
+                }
+
+                _logger.LogInformation("Buscando tendências de temperatura via SQL bruta - {Location} ({Days} dias)", locationName, days);
+
+                var trends = await _weatherDatabaseService.GetTemperatureTrendsRawAsync(locationName, days);
+
+                if (!trends.Any())
+                {
+                    return NotFound(new { message = $"Nenhum dado de tendência encontrado para {locationName}" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Tendências obtidas via consulta SQL bruta",
+                    location = locationName,
+                    period = new { days, dataPoints = trends.Count },
+                    data = trends
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro na consulta SQL bruta de tendências para {Location}", locationName);
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Comparação entre múltiplas localizações usando consulta SQL bruta
+        /// </summary>
+        /// <param name="request">Lista de localizações para comparar</param>
+        [HttpPost("analytics/location-comparison-raw")]
+        public async Task<IActionResult> GetLocationComparisonRaw([FromBody] LocationComparisonRequest request)
+        {
+            try
+            {
+                if (request?.LocationNames == null || !request.LocationNames.Any())
+                {
+                    return BadRequest(new { message = "Lista de localizações é obrigatória" });
+                }
+
+                if (request.LocationNames.Count > 10)
+                {
+                    return BadRequest(new { message = "Máximo de 10 localizações permitido" });
+                }
+
+                _logger.LogInformation("Comparando localizações via SQL bruta: {Locations}", string.Join(", ", request.LocationNames));
+
+                var comparison = await _weatherDatabaseService.GetLocationComparisonRawAsync(request.LocationNames);
+
+                if (!comparison.Any())
+                {
+                    return NotFound(new { message = "Nenhum dado encontrado para as localizações especificadas" });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Comparação obtida via consulta SQL bruta",
+                    requestedLocations = request.LocationNames,
+                    foundLocations = comparison.Count,
+                    data = comparison.OrderByDescending(c => c.AvgCurrentTemp)
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro na consulta SQL bruta de comparação");
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Informações de saúde do banco de dados usando consulta SQL bruta
+        /// </summary>
+        [HttpGet("analytics/database-health-raw")]
+        public async Task<IActionResult> GetDatabaseHealthRaw()
+        {
+            try
+            {
+                _logger.LogInformation("Verificando saúde do banco via SQL bruta");
+
+                var health = await _weatherDatabaseService.GetDatabaseHealthRawAsync();
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Informações de saúde obtidas via consulta SQL bruta",
+                    timestamp = DateTime.UtcNow,
+                    data = health
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Erro na consulta SQL bruta de saúde do banco");
+                return StatusCode(500, new { error = "Erro interno", message = ex.Message });
+            }
+        }
+
+        // DTOs para requests
+        public class UpdateLocationRequest
+        {
+            public string LocationName { get; set; } = string.Empty;
+        }
+
+        public class LocationComparisonRequest
+        {
+            public List<string> LocationNames { get; set; } = new();
+        }
     }
 }
