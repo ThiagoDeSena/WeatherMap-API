@@ -422,8 +422,8 @@ namespace WeatherMap.Services
                     GROUP BY LocationName 
                     ORDER BY TotalRecords DESC";
 
-                return await _context.Database
-                    .SqlQueryRaw<WeatherLocationStats>(sql, cutoffDate)
+                return await _context.WeatherLocationStats
+                    .FromSqlRaw(sql, cutoffDate)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -453,8 +453,8 @@ namespace WeatherMap.Services
                     GROUP BY DATE(CreatedAt)
                     ORDER BY Date DESC";
 
-                return await _context.Database
-                    .SqlQueryRaw<WeatherTrendData>(sql, $"%{locationName}%", cutoffDate)
+                return await _context.WeatherTrendData
+                    .FromSqlRaw(sql, $"%{locationName}%", cutoffDate)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -488,8 +488,8 @@ namespace WeatherMap.Services
                     GROUP BY LocationName
                     ORDER BY AvgCurrentTemp DESC";
 
-                return await _context.Database
-                    .SqlQueryRaw<WeatherComparisonData>(sql, parameters)
+                return await _context.WeatherComparisonData
+                    .FromSqlRaw(sql, parameters)
                     .ToListAsync();
             }
             catch (Exception ex)
@@ -523,9 +523,9 @@ namespace WeatherMap.Services
                              LIMIT 1
                          )) as MostQueriedLocationCount";
 
-                return await _context.Database
-                    .SqlQueryRaw<DatabaseHealthInfo>(sql)
-                    .FirstAsync();
+                return await _context.DatabaseHealthInfo
+                    .FromSqlRaw(sql)
+                    .FirstOrDefaultAsync() ?? new DatabaseHealthInfo();
             }
             catch (Exception ex)
             {

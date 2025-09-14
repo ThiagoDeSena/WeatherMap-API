@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using WeatherMap.Models;
+using WeatherMap.Services;
 
 namespace WeatherMap.Data
 {
@@ -13,6 +14,10 @@ namespace WeatherMap.Data
         public DbSet<WeatherHistory> WeatherHistories { get; set; }
         public DbSet<DailyForecast> DailyForecasts { get; set; }
 
+        public DbSet<WeatherLocationStats> WeatherLocationStats { get; set; }
+        public DbSet<WeatherTrendData> WeatherTrendData { get; set; }
+        public DbSet<WeatherComparisonData> WeatherComparisonData { get; set; }
+        public DbSet<DatabaseHealthInfo> DatabaseHealthInfo { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -32,6 +37,11 @@ namespace WeatherMap.Data
             modelBuilder.Entity<DailyForecast>()
                 .Property(d => d.WeatherDescription)
                 .HasMaxLength(500);
+
+            modelBuilder.Entity<WeatherLocationStats>().HasNoKey();
+            modelBuilder.Entity<WeatherTrendData>().HasNoKey();
+            modelBuilder.Entity<WeatherComparisonData>().HasNoKey();
+            modelBuilder.Entity<DatabaseHealthInfo>().HasNoKey();
         }
 
         //public DbSet<SuaClasse> nome { get; set; }
